@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LivewireTestController;
+use App\Http\Controllers\AlpineTestController;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,3 +34,5 @@ Route::middleware([
         return view('dashboard');
     })->name('dashboard');
 });
+
+Route::get('alpine-test/index', [AlpineTestController::class, 'index']);

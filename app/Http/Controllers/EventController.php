@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreEventRequest;
 use App\Http\Requests\UpdateEventRequest;
 use App\Models\Event;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use App\Services\EventService;
 
 class EventController extends Controller
 {
@@ -41,7 +43,39 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        //
+        EventService::checkEventDuplication($request['event_date'],$request['start_time'],        ->whereTime('start_date', '<', $request['end_time'])
+        )
+        $check = DB::table('events')
+        ->whereDate('start_date', $request['event_date'])
+        ->whereTime('end_date', '>', $request['start_time'])
+        ->whereTime('start_date', '<', $request['end_time'])
+        ->exists();
+
+        // dd($check);
+        if($check){
+            session()->flash('status', 'この時間帯は既に他の予約が存在します');
+            return view('manager.eventd.create');
+        }
+
+        $start = $request['event_date'] . " " . $request['start_time'];
+        $startDate = Carbon::createFromFormat(
+            'Y-m-d H:i', $start);
+
+        $end = $request['event_date'] . " " . $request['end_time'];
+        $endDate = Carbon::createFromFormat(
+            'Y-m-d H:i', $end);
+
+        Event::create([
+            'name' => $request['event_name'],
+            'information' => $request['information'],
+            'start_date' => $startDate,
+            'end_date' => $endDate,
+            'max_people' => $request['max_people'],
+            'is_visible' => $request['is_visible'],
+        ]);
+        session()->flash('status', '登録OKです');
+        return to_route('events.index');
+        //名前付きルート
     }
 
     /**

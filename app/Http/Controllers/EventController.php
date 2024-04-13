@@ -43,13 +43,10 @@ class EventController extends Controller
      */
     public function store(StoreEventRequest $request)
     {
-        EventService::checkEventDuplication($request['event_date'],$request['start_time'],        ->whereTime('start_date', '<', $request['end_time'])
-        )
-        $check = DB::table('events')
-        ->whereDate('start_date', $request['event_date'])
-        ->whereTime('end_date', '>', $request['start_time'])
-        ->whereTime('start_date', '<', $request['end_time'])
-        ->exists();
+        $check = EventService::checkEventDuplication(
+            $request['event_date'],
+            $request['start_time'],
+            $request['end_time']);
 
         // dd($check);
         if($check){
@@ -57,13 +54,9 @@ class EventController extends Controller
             return view('manager.eventd.create');
         }
 
-        $start = $request['event_date'] . " " . $request['start_time'];
-        $startDate = Carbon::createFromFormat(
-            'Y-m-d H:i', $start);
+        $startDate = EventService::joinDateAndTime($request['event_date'], $request['start_time']);
 
-        $end = $request['event_date'] . " " . $request['end_time'];
-        $endDate = Carbon::createFromFormat(
-            'Y-m-d H:i', $end);
+        $endDate = EventService::joinDateAndTime($request['event_date'], $request['end_time']);
 
         Event::create([
             'name' => $request['event_name'],
@@ -86,7 +79,15 @@ class EventController extends Controller
      */
     public function show(Event $event)
     {
-        //
+        $event = Event::findOrFail($event->id);
+        $eventDate = $event->eventDate;
+        $startTime = $event->startTime;
+        $endTime = $event->endTime;
+
+        // dd($eventDate,$startTime,$endTime);
+
+        return view('manager.events.show',
+        compact('event', 'eventDate', 'startTime', 'endTime'));
     }
 
     /**

@@ -5,7 +5,7 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
+    <div class="pt-4 pb-2">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white p-3 overflow-hidden shadow-xl sm:rounded-lg">
                 <div class=" max-w-2xl mx-auto ">
@@ -53,9 +53,9 @@
                             </div>
                             <div class=" mt-2 flex space-x-4 justify-around">
                                 @if($event->is_visible)
-                                    表示中
+                                表示中
                                 @else
-                                    非表示
+                                非表示
                                 @endif
                             </div>
                             @if($event->eventDate >= \Carbon\Carbon::today()->format('Y年m月d日'))
@@ -64,12 +64,42 @@
                             </x-button>
                             @endif
                         </div>
-
                     </form>
                 </div>
-
-
             </div>
         </div>
     </div>
+
+    <div class="py-4">
+        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="bg-white p-3 overflow-hidden shadow-xl sm:rounded-lg">
+                <div class=" max-w-2xl mx-auto ">
+                    @if(!$users->isEmpty())
+                    <div class=" text-center py-3 ">
+                        予約状況
+                    </div>
+                    <table class="table-auto w-full text-left whitespace-no-wrap">
+                        <thead>
+                            <tr>
+                                <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">予約者名</th>
+                                <th class="px-4 py-3 title-font tracking-wider font-medium text-gray-900 text-sm bg-gray-100">予約人数</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($reservations as $reservation)
+                            @if(is_null($reservation['canceled_date']))
+                            <tr>
+                                <td class="px-4 py-3">{{ $reservation['name'] }}</td>
+                                <td class="px-4 py-3">{{ $reservation['number_of_people'] }}</td>
+                            </tr>
+                            @endif
+                            @endforeach
+                        </tbody>
+                    </table>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+
 </x-app-layout>

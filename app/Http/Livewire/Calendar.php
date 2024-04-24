@@ -11,6 +11,8 @@ class Calendar extends Component
     public $currentDate;
     public $currentWeek;
     public $day;
+    public $checkDay; //日付判定用
+    public $dayOfWeek; //曜日
     public $sevenDaysLater;
     public $events;
     public $today;
@@ -29,7 +31,13 @@ class Calendar extends Component
 // dd($this->today);
         for ($i = 0; $i < 7; $i++) {
             $this->day = CarbonImmutable::today()->addDays($i)->format('m月d日');
-            array_push($this->currentWeek, $this->day);
+            $this->checkDay = CarbonImmutable::today()->addDays($i)->format('Y-m-d');
+            $this->dayOfWeek = CarbonImmutable::today()->addDays($i)->dayName;
+            array_push($this->currentWeek, [
+               'day' => $this->day,
+               'checkDay' => $this->checkDay,
+               'dayOfWeek' => $this->dayOfWeek,
+            ]);
         }
         // dd($this->currentWeek);
     }
@@ -49,7 +57,15 @@ class Calendar extends Component
         for ($i = 0; $i < 7; $i++) {
             $this->day = CarbonImmutable::parse($this->currentDate)->addDays($i)
                 ->format('m月d日');
-            array_push($this->currentWeek, $this->day);
+            $this->checkDay = CarbonImmutable::parse($this->currentDate)->addDays($i)
+                ->format('Y-m-d');
+            $this->dayOfWeek = CarbonImmutable::parse($this->currentDate)->addDays($i)
+                ->dayName;
+            array_push($this->currentWeek, [
+                'day' => $this->day,
+                'checkDay' => $this->checkDay,
+                'dayOfWeek' => $this->dayOfWeek,
+            ]);
         }
     }
     public function render()

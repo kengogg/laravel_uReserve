@@ -55,6 +55,13 @@ php artisan storage:link
 プロフィールページだ画像アップロード機能を使う場合は、
 .envのAPP_URLを下記に変更してください。
 
+APP_URL=http://localhost
+APP_URL=http://127.0.0.1:8000
+
+Tailwindcss 3.xの、JustInTime機能により、
+使ったHTML内クラスのみ反映されるようになっていますので、
+HTMLを編集する際は、
+npm run watch も実行しながら編集するようにしてください。
 
 
 
